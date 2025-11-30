@@ -46,36 +46,40 @@ const cards = [
 export const FandBSection = () => {
   const targetRef = useRef<HTMLDivElement>(null);
   
-  // NOTE: We allow this logic to run on Mobile now as requested.
-  // It gives a "Sticky App-Like" feel on the phone.
   const { scrollYProgress } = useScroll({
     target: targetRef,
     offset: ["start start", "end end"] 
   });
 
+  // Transform logic: 
+  // On Desktop: 0% to -75% is perfect.
+  // On Mobile: We might need to tweak this if the cards feel too fast/slow, 
+  // but -75% is usually safe for 3 cards + intro text.
   const x = useTransform(scrollYProgress, [0, 1], ["0%", "-75%"]);
 
   return (
-    // Height is 300vh to ensure enough scroll room for the horizontal animation
+    // Height is 300vh to ensure enough scroll room (The "Track")
     <section ref={targetRef} className="relative h-[300vh] bg-surface">
       
-      {/* Sticky Container */}
-      <div className="sticky top-0 flex h-screen flex-col md:flex-row items-center overflow-hidden py-12 md:py-0">
+      {/* Sticky Container 
+          FIX: Use h-[100svh] for mobile stability (avoids address bar jumping)
+      */}
+      <div className="sticky top-0 flex h-[100svh] flex-col md:flex-row items-center overflow-hidden py-12 md:py-0 w-full">
         
         {/* Section Marker */}
         <div className="absolute left-6 top-6 md:left-8 md:top-8 z-20 text-accent uppercase tracking-widest text-xs font-bold">
            02. The Track Record
         </div>
 
+        {/* The Moving Track */}
         <motion.div 
             style={{ x }} 
-            className="flex flex-row gap-8 md:gap-16 px-6 md:px-24 w-auto h-full items-center"
+            className="flex flex-row gap-8 md:gap-16 px-6 md:px-24 h-full items-center w-max"
         >
           
           {/* Intro Text Block */}
-          <div className="flex w-[80vw] md:w-[30vw] flex-col justify-center shrink-0">
+          <div className="flex w-[85vw] md:w-[30vw] flex-col justify-center shrink-0">
              <h2 className="text-4xl md:text-7xl font-bold text-primary leading-tight">
-                {/* UPDATED: Copy Change */}
                Offline Success, <br/> <span className="text-accent">Online Ghost.</span>
              </h2>
              <p className="mt-4 md:mt-8 text-secondary leading-relaxed max-w-md text-sm md:text-lg">
@@ -86,7 +90,7 @@ export const FandBSection = () => {
 
           {/* Cards */}
           {cards.map((card) => (
-            <div key={card.id} className="group relative h-[60vh] md:h-[70vh] w-[85vw] md:w-[45vw] shrink-0 overflow-hidden border border-white/10 bg-zinc-900 rounded-lg md:rounded-none">
+            <div key={card.id} className="group relative h-[50vh] md:h-[70vh] w-[85vw] md:w-[45vw] shrink-0 overflow-hidden border border-white/10 bg-zinc-900 rounded-lg md:rounded-none">
               
               {/* Image Layer */}
               <div className="absolute inset-0 overflow-hidden">
